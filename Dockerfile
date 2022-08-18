@@ -36,7 +36,7 @@ FROM alpine:latest
 WORKDIR /app
 
 COPY --from=builder /app/ssh_setup.sh /app/ssh_setup
-RUN chmod +x /app/ssh_setup.sh && (sleep 1;/app/ssh_setup.sh 2>&1 > /dev/null)
+RUN chmod +x /app/ssh_setup.sh && /app/ssh_setup.sh
 
 # Copy binary to production image
 COPY --from=builder /app/start.sh /app/start.sh
