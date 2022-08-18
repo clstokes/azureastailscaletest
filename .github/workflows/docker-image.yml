@@ -25,4 +25,4 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags: sophware01/azureastailscaletest:0.0.1
+          tags: sophware01/azureastailscaletest:0.0.2
