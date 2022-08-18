@@ -31,6 +31,10 @@ COPY sshd_config /etc/ssh/
 FROM alpine:latest
 WORKDIR /
 
+RUN mkdir -p /tmp
+COPY ssh_setup.sh /tmp
+RUN chmod +x /tmp/ssh_setup.sh \
+    && (sleep 1;/tmp/ssh_setup.sh 2>&1 > /dev/null)
 
 # Copy binary to production image
 COPY --from=builder /app/start.sh /app/start.sh
