@@ -10,17 +10,18 @@ COPY *.go ./
 RUN go build -o /hello_go_http
 
 FROM alpine:latest as tailscale
-#WORKDIR /app
+WORKDIR /app
 COPY . ./
 #ENV TSFILE=tailscale_1.28.0_amd64.tgz
 #RUN wget https://pkgs.tailscale.com/stable/${TSFILE} && \
 #  tar xzf ${TSFILE} --strip-components=1
 #COPY . ./
-RUN apk update && apk add tailscale
+RUN apk update && apk add tailscale && rm -rf /var/cache/apk/*
 COPY . ./
 
 
 FROM alpine:latest as ssh
+WORKDIR /app
 RUN apk update && apk add ca-certificates bash sudo && rm -rf /var/cache/apk/*
 
 # Azure allows SSH access to the container. This isn't needed for Tailscale to
@@ -31,11 +32,10 @@ RUN mkdir -p /etc/ssh
 COPY sshd_config /etc/ssh/
 
 FROM alpine:latest
-WORKDIR /
+WORKDIR /app
 
-RUN mkdir -p /tmp
-COPY ssh_setup.sh /tmp
-RUN chmod +x /tmp/ssh_setup.sh && (sleep 1;/tmp/ssh_setup.sh 2>&1 > /dev/null)
+COPY --from=builder /app/ssh_setup.sh /app/ssh_setup
+RUN chmod +x /app/ssh_setup.sh && (sleep 1;/app/ssh_setup.sh 2>&1 > /dev/null)
 
 # Copy binary to production image
 COPY --from=builder /app/start.sh /app/start.sh
