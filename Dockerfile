@@ -16,6 +16,7 @@ COPY . ./
 #RUN wget https://pkgs.tailscale.com/stable/${TSFILE} && \
 #  tar xzf ${TSFILE} --strip-components=1
 #COPY . ./
+RUN echo http://dl-2.alpinelinux.org/alpine/edge/community/ >> /etc/apk/repositories
 RUN apk update && apk add tailscale && rm -rf /var/cache/apk/*
 COPY . ./
 
@@ -40,9 +41,11 @@ RUN chmod +x /app/ssh_setup.sh && (sleep 1;/app/ssh_setup.sh 2>&1 > /dev/null)
 # Copy binary to production image
 COPY --from=builder /app/start.sh /app/start.sh
 RUN chmod +x /app/start.sh
-COPY --from=tailscale /app/tailscaled /app/tailscaled
-COPY --from=tailscale /app/tailscale /app/tailscale
-RUN mkdir -p /var/run/tailscale /var/cache/tailscale /var/lib/tailscale
+#COPY --from=tailscale /app/tailscaled /app/tailscaled
+#COPY --from=tailscale /app/tailscale /app/tailscale
+
+#RUN mkdir -p /var/run/tailscale /var/cache/tailscale /var/lib/tailscale
+RUN rc-update add tailscale
 
 COPY --from=builder /hello_go_http /hello_go_http
 
