@@ -1,7 +1,7 @@
 FROM golang:1.16.2-alpine3.13 as builder
 WORKDIR /app
 COPY . ./
-RUN ["chmod", "+x", "/app/start.sh"]
+
 # Install any required modules
 RUN go mod download
 # Copy over Go source code
@@ -34,6 +34,7 @@ WORKDIR /
 
 # Copy binary to production image
 COPY --from=builder /app/start.sh /app/start.sh
+RUN ["chmod", "+x", "/app/start.sh"]
 COPY --from=tailscale /app/tailscaled /app/tailscaled
 COPY --from=tailscale /app/tailscale /app/tailscale
 RUN mkdir -p /var/run/tailscale /var/cache/tailscale /var/lib/tailscale
