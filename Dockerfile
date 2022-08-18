@@ -16,7 +16,7 @@ COPY . ./
 #RUN wget https://pkgs.tailscale.com/stable/${TSFILE} && \
 #  tar xzf ${TSFILE} --strip-components=1
 #COPY . ./
-apk update && apk add tailscale
+RUN apk update && apk add tailscale
 COPY . ./
 
 
