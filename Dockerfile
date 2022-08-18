@@ -17,7 +17,7 @@ COPY . ./
 #  tar xzf ${TSFILE} --strip-components=1
 #COPY . ./
 RUN echo http://dl-2.alpinelinux.org/alpine/edge/community/ >> /etc/apk/repositories
-RUN apk update && apk add tailscale && rm -rf /var/cache/apk/*
+RUN apk update && apk add tailscale && rm -rf /var/cache/apk/* && RUN rc-update add tailscale
 COPY . ./
 
 
@@ -42,7 +42,7 @@ RUN chmod +x /app/start.sh
 #COPY --from=tailscale /app/tailscale /app/tailscale
 
 #RUN mkdir -p /var/run/tailscale /var/cache/tailscale /var/lib/tailscale
-RUN rc-update add tailscale
+
 
 COPY --from=builder /hello_go_http /hello_go_http
 
