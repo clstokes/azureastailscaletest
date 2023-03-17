@@ -1,0 +1,119 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "name": {
+            "type": "string"
+        },
+        "subscriptionId": {
+            "type": "string"
+        },
+        "tailscaleAuthKey": {
+            "type": "string"
+        },
+        "imageTag": {
+            "type": "string"
+        },
+        "serverFarmResourceGroupName": {
+            "type": "string"
+        },
+        "location": {
+            "type": "string",
+            "defaultValue": "East US"
+        },
+        "alwaysOn": {
+            "type": "bool",
+            "defaultValue": true
+        },
+        "ftpsState": {
+            "type": "string",
+            "defaultValue": "FtpsOnly"
+        },
+        "sku": {
+            "type": "string",
+            "defaultValue": "Basic"
+        },
+        "skuCode": {
+            "type": "string",
+            "defaultValue": "B1"
+        },
+        "workerSize": {
+            "type": "string",
+            "defaultValue": "0"
+        },
+        "workerSizeId": {
+            "type": "string",
+            "defaultValue": "0"
+        },
+        "numberOfWorkers": {
+            "type": "string",
+            "defaultValue": "1"
+        },
+        "dockerRegistryUrl": {
+            "type": "string",
+            "defaultValue": "https://index.docker.io"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "apiVersion": "2018-11-01",
+            "name": "[parameters('name')]",
+            "type": "Microsoft.Web/sites",
+            "location": "[parameters('location')]",
+            "tags": {},
+            "dependsOn": [
+                "[concat('Microsoft.Web/serverfarms/', parameters('name'))]"
+            ],
+            "properties": {
+                "name": "[parameters('name')]",
+                "siteConfig": {
+                    "appSettings": [
+                        {
+                            "name": "DOCKER_REGISTRY_SERVER_URL",
+                            "value": "[parameters('dockerRegistryUrl')]"
+                        },
+                        {
+                            "name": "WEBSITES_ENABLE_APP_SERVICE_STORAGE",
+                            "value": "false"
+                        },
+                        {
+                            "name": "TAILSCALE_AUTHKEY",
+                            "value": "[parameters('tailscaleAuthKey')]"
+                        }
+                    ],
+                    "linuxFxVersion": "[concat('DOCKER|', parameters('imageTag'))]",
+                    "alwaysOn": "[parameters('alwaysOn')]",
+                    "ftpsState": "[parameters('ftpsState')]"
+                },
+                "logsDirectorySizeLimit": 35,
+                "serverFarmId": "[concat('/subscriptions/', parameters('subscriptionId'), '/resourcegroups/', parameters('serverFarmResourceGroupName'), '/providers/Microsoft.Web/serverfarms/', parameters('name'))]",
+                "clientAffinityEnabled": false,
+                "virtualNetworkSubnetId": null,
+                "httpsOnly": true,
+                "publicNetworkAccess": "Enabled"
+            }
+        },
+        {
+            "apiVersion": "2018-11-01",
+            "name": "[parameters('name')]",
+            "type": "Microsoft.Web/serverfarms",
+            "location": "[parameters('location')]",
+            "kind": "linux",
+            "tags": {},
+            "dependsOn": [],
+            "properties": {
+                "name": "[parameters('name')]",
+                "workerSize": "[parameters('workerSize')]",
+                "workerSizeId": "[parameters('workerSizeId')]",
+                "numberOfWorkers": "[parameters('numberOfWorkers')]",
+                "reserved": true,
+                "zoneRedundant": false
+            },
+            "sku": {
+                "Tier": "[parameters('sku')]",
+                "Name": "[parameters('skuCode')]"
+            }
+        }
+    ]
+}
