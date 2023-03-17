@@ -19,7 +19,7 @@ create a resource group
 az group create -l eastus -n --resource-group cameron-cloudshell
 ```
 
-Update `arm-template/appservice-parameters.json` with the required values
+Update `arm-template/appservice-parameters.json` with the required values. From the `arm-template` directory:
 
 ```shell
 az deployment group create --resource-group YOUR_RG_NAME  --template-file appservice-template.json --parameters @appservice-parameters.json
