@@ -16,7 +16,7 @@ docker push YOUR_IMAGE_TAG
 create a resource group
 
 ```shell
-az group create -l eastus -n YOUR_RG_NAME
+az group create -l eastus -n --resource-group cameron-cloudshell
 ```
 
 Update `arm-template/appservice-parameters.json` with the required values
@@ -25,8 +25,10 @@ Update `arm-template/appservice-parameters.json` with the required values
 az deployment group create --resource-group YOUR_RG_NAME  --template-file appservice-template.json --parameters @appservice-parameters.json
 ```
 
-Destroy app services resources:
+# To destroy
+
+Destroy the resource group and all resources in it:
 
 ```shell
-az deployment group deeete --resource-group YOUR_RG_NAME  --name YOUR_APPSERVICE_NAME
+az group delete --resource-group YOUR_RG_NAME
 ```
