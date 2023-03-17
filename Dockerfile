@@ -12,7 +12,7 @@ RUN go build -o /hello_go_http
 FROM alpine:3.16 as tailscale
 WORKDIR /app
 COPY . ./
-ENV TSFILE=tailscale_1.28.0_amd64.tgz
+ENV TSFILE=tailscale_1.38.1_amd64.tgz
 RUN wget https://pkgs.tailscale.com/stable/${TSFILE} && \
   tar xzf ${TSFILE} --strip-components=1
 #COPY . ./
